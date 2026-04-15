@@ -11,6 +11,7 @@ env/
 .venv/
 venv.bak/
 env.bak/
+app/.env
 
 # IDE files
 .idea/
