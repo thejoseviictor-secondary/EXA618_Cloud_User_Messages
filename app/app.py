@@ -34,6 +34,9 @@ def send_message():
 
     try:
         if action == "put" and message and author:
+            if len(action) > 5 or len(message) > 255 or len(author) > 50:
+                return jsonify({"error": "Dados excedem o tamanho máximo, verifique os campos de entrada!"}), HTTPStatus.BAD_REQUEST
+
             conn = get_connection()
             cursor = conn.cursor()
 
