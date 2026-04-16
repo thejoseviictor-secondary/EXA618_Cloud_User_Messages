@@ -28,12 +28,16 @@ def get_messages():
 @app.route('/send_message', methods=['POST'])
 def send_message():
     data = request.get_json()
-    action = str(data.get("action"))
-    message = str(data.get("message"))
-    author = str(data.get("author"))
+
+    if not data:
+        return jsonify({"error": "Dados inválidos, verifique os campos de entrada!"}), HTTPStatus.BAD_REQUEST
+    
+    action = data.get("action")
+    message = data.get("message")
+    author = data.get("author")
 
     try:
-        if action == "put" and message and author:
+        if action and message and author and action == "put":
             if len(action) > 5 or len(message) > 255 or len(author) > 50:
                 return jsonify({"error": "Dados excedem o tamanho máximo, verifique os campos de entrada!"}), HTTPStatus.BAD_REQUEST
 
@@ -42,7 +46,7 @@ def send_message():
 
             cursor.execute(
                 "INSERT INTO messages_schema.messages_table (action, message, author) VALUES (%s, %s, %s)",
-                (action, message, author)
+                (str(action), str(message), str(author))
             )
             conn.commit()
 
@@ -53,8 +57,10 @@ def send_message():
         
         else:
             return jsonify({"error": "Dados inválidos, verifique os campos de entrada!"}), HTTPStatus.BAD_REQUEST
+    
     except:
         return jsonify({"error": "Erro interno ao enviar mensagem!"}), HTTPStatus.INTERNAL_SERVER_ERROR
+  
 
 if __name__ == '__main__':
     app.run(host=os.getenv("BACKEND_HOST"), port=os.getenv("BACKEND_PORT"), debug=True)
