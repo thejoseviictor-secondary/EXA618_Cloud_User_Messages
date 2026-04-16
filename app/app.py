@@ -28,9 +28,9 @@ def get_messages():
 @app.route('/send_message', methods=['POST'])
 def send_message():
     data = request.get_json()
-    action = data.get("action")
-    message = data.get("message")
-    author = data.get("author")
+    action = str(data.get("action"))
+    message = str(data.get("message"))
+    author = str(data.get("author"))
 
     try:
         if action == "put" and message and author:
